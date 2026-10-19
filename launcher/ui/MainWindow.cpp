@@ -602,6 +602,16 @@ void MainWindow::updateLaunchButton()
         launchMenu = new QMenu(this);
     if (m_selectedInstance)
         m_selectedInstance->populateLaunchMenu(launchMenu);
+
+    if (m_selectedInstance) {
+        launchMenu->addSeparator();
+        auto* offlineAction = new QAction(tr("Offline Mode"), launchMenu);
+        offlineAction->setToolTip(tr("Launch with a username without signing in to Microsoft"));
+        offlineAction->setEnabled(m_selectedInstance->canLaunch());
+        auto* instance = m_selectedInstance;
+        connect(offlineAction, &QAction::triggered, this, [instance] { APPLICATION->launch(instance, LaunchMode::Offline); });
+        launchMenu->addAction(offlineAction);
+    }
     ui->actionLaunchInstance->setMenu(launchMenu);
 }
 

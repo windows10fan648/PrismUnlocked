@@ -278,6 +278,24 @@ QString LaunchController::askOfflineName(const QString& playerName, bool* ok)
 
 void LaunchController::login()
 {
+    // The dedicated Offline Mode action is intentionally independent of the
+    // account list. Microsoft authentication remains the normal launch path.
+    if (m_wantedLaunchMode == LaunchMode::Offline && !m_accountToUse) {
+        m_actualLaunchMode = LaunchMode::Offline;
+        bool ok = false;
+        const auto name = askOfflineName("Player", &ok);
+        if (!ok) {
+            emitAborted();
+            return;
+        }
+
+        m_session = std::make_shared<AuthSession>();
+        m_session->launchMode = LaunchMode::Offline;
+        m_session->MakeOffline(name);
+        launchInstance();
+        return;
+    }
+
     decideAccount();
 
     LaunchDecision decision = decideLaunchMode();

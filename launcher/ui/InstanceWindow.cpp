@@ -94,6 +94,13 @@ InstanceWindow::InstanceWindow(MinecraftInstance* instance, QWidget* parent) : Q
         horizontalLayout->addWidget(m_launchButton);
         connect(m_launchButton, &QPushButton::clicked, this, [this] { APPLICATION->launch(m_instance); });
 
+        m_offlineButton = new QPushButton(this);
+        m_offlineButton->setText(tr("Offline Mode"));
+        m_offlineButton->setToolTip(tr("Launch with a username without signing in to Microsoft"));
+        horizontalLayout->addWidget(m_offlineButton);
+        connect(m_offlineButton, &QPushButton::clicked, this,
+                [this] { APPLICATION->launch(m_instance, LaunchMode::Offline); });
+
         m_restartButton = new QPushButton(this);
         m_restartButton->setText(tr("&Restart"));
         m_restartButton->setToolTip(tr("Restart the running instance"));
@@ -164,9 +171,11 @@ void InstanceWindow::updateButtons()
     const bool running = m_instance->isRunning();
 
     m_launchButton->setVisible(!running);
+    m_offlineButton->setVisible(!running);
     m_restartButton->setVisible(running);
 
     m_launchButton->setEnabled(m_instance->canLaunch());
+    m_offlineButton->setEnabled(m_instance->canLaunch());
     m_restartButton->setEnabled(running && !m_restartQueued);
     m_killButton->setEnabled(running);
 

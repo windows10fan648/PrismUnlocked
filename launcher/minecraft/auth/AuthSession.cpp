@@ -1,4 +1,5 @@
 #include "AuthSession.h"
+#include "MinecraftAccount.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -23,6 +24,8 @@ bool AuthSession::MakeOffline(QString offline_playername)
     session = "-";
     access_token = "0";
     player_name = offline_playername;
+    uuid = MinecraftAccount::uuidFromUsername(offline_playername).toString(QUuid::Id128);
+    user_type = "offline";
     return true;
 }
 

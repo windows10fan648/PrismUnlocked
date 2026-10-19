@@ -91,6 +91,7 @@ class InstanceWindow : public QMainWindow, public BasePageContainer {
     PageContainer* m_container = nullptr;
     QPushButton* m_closeButton = nullptr;
     QToolButton* m_launchButton = nullptr;
+    QPushButton* m_offlineButton = nullptr;
     QPushButton* m_restartButton = nullptr;
     QPushButton* m_killButton = nullptr;
 };

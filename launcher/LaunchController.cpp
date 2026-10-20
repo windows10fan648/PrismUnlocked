@@ -94,17 +94,15 @@ void LaunchController::decideAccount()
     }
 
     if (!accounts->anyAccountIsValid()) {
-        // Tell the user they need to log in at least one account in order to play.
+        // Offer the account-free path instead of requiring a Microsoft account.
         auto reply = CustomMessageBox::selectable(m_parentWidget, tr("No Accounts"),
-                                                  tr("In order to play Minecraft, you must have at least one Microsoft "
-                                                     "account which owns Minecraft logged in. "
-                                                     "Would you like to open the account manager to add an account now?"),
+                                                  tr("No Microsoft account is signed in. Would you like to launch in Offline Mode?"),
                                                   QMessageBox::Information, QMessageBox::Yes | QMessageBox::No)
                          ->exec();
 
         if (reply == QMessageBox::Yes) {
-            // Open the account manager.
-            APPLICATION->ShowGlobalSettings(m_parentWidget, "accounts");
+            m_wantedLaunchMode = LaunchMode::Offline;
+            return;
         } else if (reply == QMessageBox::No) {
             // Do not open "profile select" dialog.
             return;
@@ -126,6 +124,23 @@ void LaunchController::decideAccount()
             accounts->setDefaultAccount(m_accountToUse);
         }
     }
+}
+
+bool LaunchController::launchWithoutAccount()
+{
+    m_actualLaunchMode = LaunchMode::Offline;
+    bool ok = false;
+    const auto name = askOfflineName("Player", &ok);
+    if (!ok) {
+        emitAborted();
+        return false;
+    }
+
+    m_session = std::make_shared<AuthSession>();
+    m_session->launchMode = LaunchMode::Offline;
+    m_session->MakeOffline(name);
+    launchInstance();
+    return true;
 }
 
 LaunchDecision LaunchController::decideLaunchMode()
@@ -281,22 +296,16 @@ void LaunchController::login()
     // The dedicated Offline Mode action is intentionally independent of the
     // account list. Microsoft authentication remains the normal launch path.
     if (m_wantedLaunchMode == LaunchMode::Offline && !m_accountToUse) {
-        m_actualLaunchMode = LaunchMode::Offline;
-        bool ok = false;
-        const auto name = askOfflineName("Player", &ok);
-        if (!ok) {
-            emitAborted();
-            return;
-        }
-
-        m_session = std::make_shared<AuthSession>();
-        m_session->launchMode = LaunchMode::Offline;
-        m_session->MakeOffline(name);
-        launchInstance();
+        launchWithoutAccount();
         return;
     }
 
     decideAccount();
+
+    if (m_wantedLaunchMode == LaunchMode::Offline && !m_accountToUse) {
+        launchWithoutAccount();
+        return;
+    }
 
     LaunchDecision decision = decideLaunchMode();
     while (decision == LaunchDecision::Undecided) {

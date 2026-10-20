@@ -94,19 +94,9 @@ void LaunchController::decideAccount()
     }
 
     if (!accounts->anyAccountIsValid()) {
-        // Offer the account-free path instead of requiring a Microsoft account.
-        auto reply = CustomMessageBox::selectable(m_parentWidget, tr("No Accounts"),
-                                                  tr("No Microsoft account is signed in. Would you like to launch in Offline Mode?"),
-                                                  QMessageBox::Information, QMessageBox::Yes | QMessageBox::No)
-                         ->exec();
-
-        if (reply == QMessageBox::Yes) {
-            m_wantedLaunchMode = LaunchMode::Offline;
-            return;
-        } else if (reply == QMessageBox::No) {
-            // Do not open "profile select" dialog.
-            return;
-        }
+        // An account-free launch uses the full offline path.
+        m_wantedLaunchMode = LaunchMode::Offline;
+        return;
     }
 
     if (!m_accountToUse && accounts->anyAccountIsValid()) {
@@ -145,8 +135,13 @@ bool LaunchController::launchWithoutAccount()
 
 LaunchDecision LaunchController::decideLaunchMode()
 {
-    if (!m_accountToUse || m_wantedLaunchMode == LaunchMode::Demo) {
+    if (m_wantedLaunchMode == LaunchMode::Demo) {
         m_actualLaunchMode = LaunchMode::Demo;
+        return LaunchDecision::Continue;
+    }
+
+    if (!m_accountToUse || m_accountToUse->accountType() == AccountType::Offline) {
+        m_actualLaunchMode = LaunchMode::Offline;
         return LaunchDecision::Continue;
     }
 

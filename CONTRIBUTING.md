@@ -1,8 +1,10 @@
 # Contributions Guidelines
 
-## Foreword on AI usage
+## AI usage and disclosure
 
-Our team believes in **human contributions**. Any contribution - be it an issue report or a pull request - which is created by, documented by, or aided by AI/LLM usage will typically be **closed and locked without further discussion**.
+AI tools, including ChatGPT and other LLMs, may be used to assist with research, drafting, debugging, or code suggestions. Contributions remain the responsibility of their human authors and must be reviewed, understood, tested, and compliant with the project's licenses.
+
+If AI assistance was used for an issue, pull request, documentation, or code, disclose it in the description. Name the tool and briefly describe what it helped with. Do not submit unreviewed generated content, confidential information, credentials, or copyrighted material that you do not have permission to use. Maintainers may request clarification or changes when AI-assisted content is inaccurate, incomplete, or improperly attributed.
 
 ## Code style
 

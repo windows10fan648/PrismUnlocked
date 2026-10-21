@@ -26,6 +26,8 @@ Release and development artifacts are available from the repository's [GitHub Ac
 
 Development builds may contain bugs and are intended for testing. Download the newest artifact from a successful Release or Build workflow.
 
+Built executables are named `prismunlocked` (for example, `prismunlocked.exe` on Windows), with matching updater and file-link helper names.
+
 ## Usage
 
 1. Add or import a Minecraft instance.
@@ -50,6 +52,10 @@ Use the platform-appropriate preset for Windows or macOS. The repository's GitHu
 ## Support
 
 For bugs or feature requests, [open an issue](https://github.com/windows10fan648/PrismUnlocked/issues). When reporting a problem, include your operating system, launcher version, instance version, and relevant logs.
+
+## AI assistance disclosure
+
+Prism Unlocked is developed with human review and may use AI tools such as ChatGPT for research, drafting, debugging, and code suggestions. AI-assisted changes are reviewed, tested, and corrected by a project maintainer before they are accepted. Contributions that use AI assistance should disclose that use in the pull request description, including the tool and a brief description of how it was used.
 
 ## Relationship to Prism Launcher
 
